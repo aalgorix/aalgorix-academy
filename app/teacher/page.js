@@ -1,10 +1,10 @@
 /**
  * app/teacher/page.js — Server component wrapper.
- * Metadata lives here; all hooks and client logic live in TeacherDashboard.jsx.
+ * Metadata lives here; all hooks and client logic live in teacherdashboard.jsx.
  */
 
 import { Suspense } from 'react';
-import TeacherDashboard from './TeacherDashboard';
+import teacherdashboard from './teacherdashboard';
 
 export const metadata = {
   title: 'Teacher Portal | Aalgorix Academy',
@@ -23,7 +23,7 @@ export default function TeacherPage() {
         </div>
       }
     >
-      <TeacherDashboard />
+      <teacherdashboard />
     </Suspense>
   );
 }
