@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 /* ─── All Styles ────────────────────────────── */
@@ -148,8 +148,8 @@ function NeuralNet() {
   );
 }
 
-/* ─── Main Login Component ──────────────────────────────────────────────── */
-export default function LoginPage() {
+/* ─── Login Logic Component (Extracted for Suspense) ────────────────────── */
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("from") || "/student";
@@ -159,27 +159,12 @@ export default function LoginPage() {
   const [showPass, setShowPass] = useState(false);
   const [alert, setAlert] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [stars,   setStars  ] = useState([]);
 
-  // Generate random star positions client-side only to avoid SSR hydration mismatch
-  useEffect(() => {
-    setStars(
-      Array.from({ length: 45 }, (_, i) => ({
-        id:   i,
-        top:  `${Math.random() * 100}%`,
-        left: `${Math.random() * 100}%`,
-        size: 1 + Math.random() * 2.5,
-      }))
-    );
-  }, []);
-
-  // Session check — redirect if a real JWT session already exists
   useEffect(() => {
     try {
       const raw = localStorage.getItem("aalgorix_session");
       if (raw) {
         const s = JSON.parse(raw);
-        // Only redirect for real tokens, not the old fake placeholder
         if (s?.token && s.token !== "aalgorix-local-auth") {
           router.replace(redirectTo);
         }
@@ -187,7 +172,7 @@ export default function LoginPage() {
     } catch {
       localStorage.removeItem("aalgorix_session");
     }
-  }, [router]);
+  }, [router, redirectTo]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -201,7 +186,6 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // Calls the Next.js middleman API route — no CORS, no backend dependency
       const res = await fetch("/api/login", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
@@ -239,48 +223,8 @@ export default function LoginPage() {
     }
   };
 
-
   return (
     <div
-      className="aa-page"
-      style={{
-        minHeight: "100vh",
-        position: "relative",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        overflow: "hidden",
-        background: "radial-gradient(ellipse 130% 85% at 55% -5%, #0d2a50 0%, #060f1f 50%, #020810 100%)",
-      }}
-    >
-      <style dangerouslySetInnerHTML={{ __html: STYLES }} />
-
-      <NeuralNet />
-
-      {/* Stars */}
-      {stars.map((s) => (
-        <div
-          key={s.id}
-          style={{
-            position: "absolute",
-            top: s.top,
-            left: s.left,
-            width: s.size,
-            height: s.size,
-            background: "#fff",
-            borderRadius: "50%",
-            opacity: 0.18,
-            animation: "aa-twinkle 2.5s infinite",
-          }}
-        />
-      ))}
-
-      {/* Orbs */}
-      <div className="aa-orb" style={{ width: 520, height: 520, background: "rgba(58,176,255,0.09)", top: "-140px", left: "-130px", animationDuration: "9s" }} />
-      <div className="aa-orb" style={{ width: 380, height: 380, background: "rgba(11,30,60,0.92)", bottom: "-100px", right: "-100px", animationDuration: "12s" }} />
-
-      {/* Login Card */}
-      <div
         className="aa-card-anim"
         style={{
           position: "relative",
@@ -296,7 +240,6 @@ export default function LoginPage() {
           boxShadow: "0 28px 60px rgba(0,0,0,0.65), 0 0 70px rgba(58,176,255,0.06)",
         }}
       >
-        {/* Scan Line */}
         <div
           className="aa-scan"
           style={{
@@ -309,7 +252,6 @@ export default function LoginPage() {
           }}
         />
 
-        {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "28px" }}>
           <div
             style={{
@@ -340,7 +282,6 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Alert */}
         {alert && (
           <div
             style={{
@@ -357,7 +298,6 @@ export default function LoginPage() {
           </div>
         )}
 
-        {/* Form */}
         <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <div>
             <label style={{ display: "block", marginBottom: "6px", fontSize: "11px", fontWeight: 600, color: "rgba(255,255,255,0.45)", textTransform: "uppercase" }}>
@@ -407,12 +347,10 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* Footer */}
         <p style={{ textAlign: "center", marginTop: "26px", fontSize: "11px", color: "rgba(255,255,255,0.22)" }}>
           Powered by <span style={{ color: "rgba(58,176,255,0.6)" }}>Professors AI</span>
         </p>
 
-        {/* Loading Overlay */}
         {loading && (
           <div
             style={{
@@ -433,6 +371,67 @@ export default function LoginPage() {
           </div>
         )}
       </div>
+  );
+}
+
+/* ─── Main Page Wrapper ─────────────────────────────────────────────────── */
+export default function LoginPage() {
+  const [stars, setStars] = useState([]);
+
+  useEffect(() => {
+    setStars(
+      Array.from({ length: 45 }, (_, i) => ({
+        id:   i,
+        top:  `${Math.random() * 100}%`,
+        left: `${Math.random() * 100}%`,
+        size: 1 + Math.random() * 2.5,
+      }))
+    );
+  }, []);
+
+  return (
+    <div
+      className="aa-page"
+      style={{
+        minHeight: "100vh",
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        overflow: "hidden",
+        background: "radial-gradient(ellipse 130% 85% at 55% -5%, #0d2a50 0%, #060f1f 50%, #020810 100%)",
+      }}
+    >
+      <style dangerouslySetInnerHTML={{ __html: STYLES }} />
+
+      <NeuralNet />
+
+      {/* Stars */}
+      {stars.map((s) => (
+        <div
+          key={s.id}
+          style={{
+            position: "absolute",
+            top: s.top,
+            left: s.left,
+            width: s.size,
+            height: s.size,
+            background: "#fff",
+            borderRadius: "50%",
+            opacity: 0.18,
+            animation: "aa-twinkle 2.5s infinite",
+          }}
+        />
+      ))}
+
+      {/* Orbs */}
+      <div className="aa-orb" style={{ position: "absolute", borderRadius: "50%", filter: "blur(60px)", zIndex: 1, width: 520, height: 520, background: "rgba(58,176,255,0.09)", top: "-140px", left: "-130px", animationDuration: "9s" }} />
+      <div className="aa-orb" style={{ position: "absolute", borderRadius: "50%", filter: "blur(60px)", zIndex: 1, width: 380, height: 380, background: "rgba(11,30,60,0.92)", bottom: "-100px", right: "-100px", animationDuration: "12s" }} />
+
+      {/* Wrapping the Logic in Suspense fixes the Prerendering Error */}
+      <Suspense fallback={<div style={{ color: "white", fontSize: "14px" }}>Loading Portal...</div>}>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 }
