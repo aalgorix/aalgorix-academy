@@ -35,6 +35,7 @@ const InquiryPage = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -44,11 +45,26 @@ const InquiryPage = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
+    setSubmitError(null);
+    try {
+      const res = await fetch('/api/inquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+
+      if (!res.ok || !data?.ok) {
+        throw new Error(data?.error || 'Failed to submit enquiry');
+      }
+
       alert('Thank you! Your enquiry has been submitted successfully.\n\nOur team will contact you soon.');
       setFormData({ name: '', grade: '', email: '', country: 'India', city: '', countryCode: '+91', mobile: '' });
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Failed to submit enquiry');
+    } finally {
       setIsSubmitting(false);
-    }, 800);
+    }
   };
 
   return (
@@ -98,9 +114,11 @@ const InquiryPage = () => {
                       className={selectCls}
                     >
                       <option value="">Select Grade</option>
-                      <option value="Grade 6-8">Grade 6–8</option>
-                      <option value="Grade 9-10">Grade 9–10</option>
-                      <option value="Grade 11-12">Grade 11–12</option>
+                      <option value="Pre Primary">Pre Primary</option>
+                      <option value="Primary">Primary</option>
+                      <option value="Upper Primary">Upper Primary</option>
+                      <option value="Secondary">Secondary</option>
+                      <option value="Senior Secondary">Senior Secondary</option>
                     </select>
                     <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">▾</span>
                   </div>
@@ -197,6 +215,11 @@ const InquiryPage = () => {
                 >
                   {isSubmitting ? 'Submitting…' : 'Submit Enquiry'}
                 </button>
+                {submitError && (
+                  <p className="text-[12px] font-semibold text-red-600">
+                    {submitError}
+                  </p>
+                )}
               </form>
             </div>
           </div>
@@ -211,7 +234,7 @@ const InquiryPage = () => {
                   key={label}
                   className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm hover:shadow-[0_4px_16px_rgba(15,23,42,0.12)] hover:-translate-y-0.5 transition-all duration-200"
                 >
-                  <p className="text-[13px] font-semibold text-[#1E3A8A]">
+                  <p className="text-[25px] font-semibold text-[#1E3A8A]">
                     {icon} {label}
                   </p>
                 </div>
@@ -224,7 +247,7 @@ const InquiryPage = () => {
                 key={text}
                 className="rounded-xl px-4 py-3 shadow-sm hover:shadow-[0_4px_16px_rgba(15,23,42,0.1)] hover:-translate-y-0.5 transition-all duration-200 bg-white border border-slate-200"
               >
-                <p className="text-[13px] font-semibold text-[#1E3A8A]">
+                <p className="text-[22px] font-semibold text-[#1E3A8A]">
                   {text}
                 </p>
               </div>

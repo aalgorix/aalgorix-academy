@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import HeroTextSlider from "./components/HeroTextSlider";
+import FloatingBannerVideo from "./components/FloatingBannerVideo";
 
 /** Featured hero video — https://youtu.be/AA55pkP_4-0 */
 const HERO_VIDEO_ID = "AA55pkP_4-0";
@@ -154,24 +155,15 @@ export default function Home() {
           <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
           <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
 
-          {/* Line below navbar (hero only) */}
-          <div
-            className="pointer-events-none absolute inset-x-0 z-[3] flex justify-center px-4"
-            style={{ top: "calc(var(--aa-topbar-h) + var(--aa-navbar-h) + 20px)" }}
-          >
-            <div className="rounded-full border border-white/15 bg-black/25 px-8 py-4 text-center text-xl font-bold tracking-wide text-white/95 backdrop-blur md:text-2xl">
-              Prepare your child for an Algorithmic World
-            </div>
-          </div>
+          {/* Floating banner video (ad-style) */}
+          <FloatingBannerVideo src="/banner-video.mp4" />
 
           {/* Hero Content */}
-          <div className="pointer-events-none relative z-[2] mx-auto flex h-full max-w-7xl items-end px-4 pb-10 md:px-8 md:pb-14">
+          <div className="pointer-events-none relative z-[2] mx-auto flex h-full max-w-7xl items-end px-4 pb-7 md:px-8 md:pb-10">
             <div className="max-w-2xl pointer-events-auto">
-              {/* Badge */}
-              <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-[12px] font-semibold uppercase tracking-widest text-white/90 backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-white/80" />
-                AI Tutor · Grade 3–12 · Future-ready home schooling
-              </p>
+              <div className="mb-5 inline-flex rounded-full border border-white/15 bg-black/25 px-7 py-3 text-center text-lg font-extrabold tracking-wide backdrop-blur md:px-9 md:py-4 md:text-2xl">
+                <span style={{ color: "#c9a45c" }}>Prepare your child for an Algorithmic World</span>
+              </div>
               <HeroTextSlider />
 
               <div className="mt-8 flex w-full flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
@@ -196,7 +188,7 @@ export default function Home() {
                   href="/try-it"
                   className="h-11 w-full rounded-full border border-white/25 bg-white/5 px-7 text-center text-sm font-bold leading-[44px] text-white/95 backdrop-blur-sm transition hover:border-white/45 hover:bg-white/10 hover:text-white active:scale-[0.985] sm:w-auto sm:leading-normal sm:py-3"
                 >
-                  Try AI Assistant
+                  Try AI Tutor
                 </Link>
               </div>
             </div>

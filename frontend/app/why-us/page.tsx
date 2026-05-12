@@ -28,7 +28,7 @@ export default function WhyUsPage() {
                 href="/contact"
                 className="rounded-xl border border-slate-300 bg-white px-7 py-3 text-center text-sm font-bold text-slate-900 shadow-sm transition-all hover:border-slate-400 hover:bg-slate-50 dark:border-white/15 dark:bg-black/20 dark:text-white/85 dark:hover:bg-white/10"
               >
-                Talk to Admissions
+                Not convinced yet? Talk to a Homeschooler Parent Today!
               </Link>
             </div>
           </div>

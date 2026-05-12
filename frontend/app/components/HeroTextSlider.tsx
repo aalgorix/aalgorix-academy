@@ -107,7 +107,7 @@ export default function HeroTextSlider({
   const prevSlide = prevIndex === null ? null : slides[prevIndex];
 
   return (
-    <div className="relative mt-3 min-h-[210px] md:min-h-[230px]">
+    <div className="relative mt-6 min-h-[210px] md:mt-7 md:min-h-[230px]">
       <div className="relative">
         {/* Previous slide (fades out) */}
         {prevSlide && !reducedMotion && (
@@ -115,12 +115,6 @@ export default function HeroTextSlider({
             className="absolute inset-0 transition-all duration-700 ease-out opacity-0 -translate-y-2"
             aria-hidden="true"
           >             
-            {prevSlide.kicker && (
-              <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-white/90 backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-white/80" />
-                {prevSlide.kicker}
-              </p>
-            )}
             <h1 className="text-3xl font-bold leading-tight tracking-tight drop-shadow-lg md:text-5xl">
               <span className="text-white">{prevSlide.title}</span>{" "}
               {prevSlide.highlight && (
@@ -149,13 +143,6 @@ export default function HeroTextSlider({
           aria-live="polite"
           style={!reducedMotion ? { transform: "translateY(0)" } : undefined}
         >
-          {slide.kicker && (
-            <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-white/90 backdrop-blur">
-              <span className="h-1.5 w-1.5 rounded-full bg-white/80" />
-              {slide.kicker}
-            </p>
-          )}
-
           <h1 className="text-3xl font-bold leading-tight tracking-tight drop-shadow-lg md:text-5xl">
             <span className="text-white">{slide.title}</span>{" "}
             {slide.highlight && (

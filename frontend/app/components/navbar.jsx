@@ -10,14 +10,11 @@ const GOLD = "#c9a45c";
 
 /* ── Dropdown data ── */
 const dropdownMenus = {
-  Programs: [
+  Academics: [
     { label: "Boards", items: ["Primary", "Secondary"] },
     { label: "Languages", items: ["French", "Spanish", "German", "Italian", "Russian"] },
     { label: "Life Skills", items: ["Public speaking", "Communication skills", "Social skills"] },
     { label: "Competitive", items: ["Olympiad", "Robotics", "Scholarship Exams", "Interschool Quizzes"] },
-  ],
-  Admissions: [
-    { label: "How to Apply", href: "/contact" },
   ],
 };
 
@@ -207,8 +204,9 @@ export default function Navbar() {
   const primaryLinks = [
     { href: "/ai-tutor", label: "AI Tutor" },
     { href: "/learning-model", label: "Learning Model" },
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
+    { href: "/talent-partners", label: "Talent Partners" },
+    { href: "/talent-support", label: "Talent Support" },
+    { href: "/#faq", label: "FAQ" },
   ];
 
   const navTextClass = isHeroTop
@@ -223,11 +221,14 @@ export default function Navbar() {
     <header
       className={[
         "fixed z-50 w-full transition-all duration-300",
-        // Glass navbar on ALL pages
-        "backdrop-blur-md",
-        "bg-white/10 dark:bg-black/20",
+        // Hero top (home): transparent, no blur. Else: glass blur.
+        isHeroTop ? "bg-transparent" : "backdrop-blur-md bg-white/10 dark:bg-black/20",
         // Subtle border always, stronger when scrolled
-        scrolled ? "border-b border-white/25 shadow-sm dark:shadow-[0_16px_50px_rgba(0,0,0,0.35)]" : "border-b border-white/15 shadow-none",
+        isHeroTop
+          ? "border-b border-transparent shadow-none"
+          : scrolled
+            ? "border-b border-white/25 shadow-sm dark:shadow-[0_16px_50px_rgba(0,0,0,0.35)]"
+            : "border-b border-white/15 shadow-none",
       ].join(" ")}
       style={{ top: "var(--aa-topbar-h)" }}
     >
@@ -244,18 +245,18 @@ export default function Navbar() {
           >
             A
           </div>
-          <span className="hidden sm:flex flex-col items-center">
+          <span className="hidden sm:flex flex-col items-start">
             <span className={`block text-xl font-bold leading-tight md:text-2xl ${navTextClass} whitespace-nowrap`}>
               Aalgorix <span style={{ color: GOLD }}>World Academy</span>
             </span>
             <span
               className={[
-                "mt-0.5 block whitespace-nowrap text-center font-medium uppercase",
-                "text-[clamp(10px,0.85vw,13px)] tracking-[0.18em] leading-tight",
+                "mt-0.5 block whitespace-nowrap text-left font-medium uppercase",
+                "text-[clamp(15px,0.85vw,13px)] tracking-[0.18em] leading-tight",
                 navSubTextClass,
               ].join(" ")}
             >
-              Future ready home schooling
+              AI Powered Home School
             </span>
           </span>
         </Link>
@@ -314,7 +315,6 @@ export default function Navbar() {
                 : ""
             }
           />
-          <LoginButton isHeroTop={isHeroTop} />
         </div>
 
         {/* ── Hamburger (mobile) ── */}
