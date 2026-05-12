@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import HeroTextSlider from "./components/HeroTextSlider";
 import FloatingBannerVideo from "./components/FloatingBannerVideo";
+import HeroBrochureButton from "./components/HeroBrochureButton";
 
 /** Featured hero video — https://youtu.be/AA55pkP_4-0 */
 const HERO_VIDEO_ID = "AA55pkP_4-0";
@@ -190,6 +191,7 @@ export default function Home() {
                 >
                   Try AI Tutor
                 </Link>
+                <HeroBrochureButton />
               </div>
             </div>
           </div>
