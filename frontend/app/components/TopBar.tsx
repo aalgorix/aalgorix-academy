@@ -69,7 +69,7 @@ export default function TopBar() {
               textClass,
             ].join(" ")}
           >
-            Enrollment for 2027–2028 school year is open{" "}
+            Enrollment for 2026–2027 school year is open{" "}
             <Link href="/program" className={`font-bold ${linkClass}`}>
               Learn more
             </Link>

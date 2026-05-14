@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function AITutorClient() {
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
-      <main className="mx-auto w-full max-w-7xl px-4 pb-16 pt-28 md:px-8 md:pb-20">
+      <main className="mx-auto w-full max-w-7xl px-4 pb-16 pt-8 md:px-8 md:pb-20 md:pt-10">
         {/* Hero */}
         <section className="grid items-center gap-10 lg:grid-cols-2">
           <div>

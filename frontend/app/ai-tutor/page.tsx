@@ -1,6 +1,12 @@
 import AITutorClient from "./AITutorClient";
+import TalentFarmingIntro from "./TalentFarmingIntro";
 
 export default function AITutorPage() {
-  return <AITutorClient />;
+  return (
+    <>
+      <TalentFarmingIntro />
+      <AITutorClient />
+    </>
+  );
 }
 
