@@ -77,13 +77,6 @@ export default function TopBar() {
         </div>
 
         <div className="flex w-[240px] items-center justify-end gap-2">
-          <button
-            type="button"
-            onClick={openBrochure}
-            className={`hidden sm:inline-flex items-center rounded-full border ${pillBase} backdrop-blur transition ${pillClass}`}
-          >
-            Brochure
-          </button>
           <Link
             href="/about"
             className={`hidden sm:inline-flex items-center rounded-full border ${pillBase} backdrop-blur transition ${pillClass}`}

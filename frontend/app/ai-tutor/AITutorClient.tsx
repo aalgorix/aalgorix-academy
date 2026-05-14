@@ -1,9 +1,6 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Link from "next/link";
-
-const ThreeTutor = dynamic(() => import("../components/ThreeTutor"), { ssr: false });
 
 export default function AITutorClient() {
   return (
@@ -56,7 +53,20 @@ export default function AITutorClient() {
           </div>
 
           <div className="lg:pl-6">
-            <ThreeTutor />
+            <div className="overflow-hidden rounded-3xl border border-slate-200 bg-slate-950 shadow-[0_24px_80px_rgba(15,23,42,0.18)] dark:border-white/10 dark:shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
+              <video
+                className="aspect-video w-full object-contain"
+                controls
+                playsInline
+                preload="metadata"
+                aria-label="AI Tutor product demo video"
+              >
+                <source src="/ai-tutor-demo.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <p className="mt-3 text-center text-xs text-slate-500 dark:text-white/50">
+              Demo: see how the AI Tutor guides practice and feedback.
+            </p>
           </div>
         </section>
 

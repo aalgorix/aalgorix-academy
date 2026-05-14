@@ -62,7 +62,7 @@ h6 {
   --foreground: var(--aa-text-white);
 
   --aa-topbar-h: 56px;
-  --aa-navbar-h: 84px;
+  --aa-navbar-h: 88px;
 }
 
 html.dark {
