@@ -36,6 +36,14 @@ export default function HeroTextSlider({
     () => [
       {
         kicker: "Grade 3–12 · Future-ready homeschooling",
+        title: "We care for the Child's",
+        highlight: "wellbeing",
+        suffix: "",
+        body:
+          "We believe in the holistic development of the child. We are committed to providing a safe and nurturing environment for the child.",
+      },
+      {
+        kicker: "Grade 3–12 · Future-ready homeschooling",
         title: "AI Tutor +",
         highlight: "personalised learning",
         suffix: "",

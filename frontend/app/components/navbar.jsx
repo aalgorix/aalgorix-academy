@@ -5,17 +5,16 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import ThemeToggle from "./ThemeToggle";
 import { LogIn } from "lucide-react";
+import {
+  academicsMenuGroups,
+  academicsNavLinks,
+  academicItemHref,
+  academicSectionHref,
+} from "../lib/academics-nav";
 
 const GOLD = "#c9a45c";
 
-const dropdownMenus = {
-  Academics: [
-    { label: "Boards", items: ["Primary", "Secondary"] },
-    { label: "Languages", items: ["French", "Spanish", "German", "Italian", "Russian"] },
-    { label: "Life Skills", items: ["Public speaking", "Communication skills", "Social skills"] },
-    { label: "Competitive", items: ["Olympiad", "Robotics", "Scholarship Exams", "Interschool Quizzes"] },
-  ],
-};
+const dropdownMenus = {};
 
 /** Anchor targets on `/why-us` — keep in sync with `app/why-us/page.tsx` section ids */
 const whyUsNavLinks = [
@@ -130,42 +129,107 @@ function DropdownMenu({ label, items, isHeroTop }) {
           <div className="h-[2px] w-full" style={{ background: "linear-gradient(90deg, rgba(201,164,92,0), rgba(201,164,92,1), rgba(201,164,92,0))" }} />
           {"items" in (items?.[0] ?? {}) ? (
             <ul className="py-1">
+              {label === "Academics" && (
+                <li className="border-b border-white/10 pb-1">
+                  <Link
+                    href="/academics"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2 px-4 py-2.5 text-[13px] font-semibold text-[#c9a45c] transition-colors duration-300 hover:bg-white/10"
+                  >
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#c9a45c]" />
+                    Academics overview
+                  </Link>
+                </li>
+              )}
               {items.map((group) => {
                 const expanded = openGroup === group.label;
+                const sectionHref = group.sectionId ? academicSectionHref(group.sectionId) : null;
                 return (
                   <li key={group.label}>
-                    <button
-                      type="button"
-                      onClick={() => setOpenGroup((v) => (v === group.label ? null : group.label))}
-                      className="flex w-full items-center justify-between gap-2 px-4 py-2.5 text-left text-[13px] text-white/90 transition-colors duration-300 hover:bg-white/10 hover:text-[#c9a45c]"
-                    >
-                      <span className="flex items-center gap-2">
-                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#c9a45c]/80" />
-                        {group.label}
-                      </span>
-                      <svg
-                        className={`h-3.5 w-3.5 transition-transform duration-200 ${expanded ? "rotate-180 text-[#c9a45c]" : "text-white/70"}`}
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
+                    {sectionHref ? (
+                      <Link
+                        href={sectionHref}
+                        onClick={() => setOpen(false)}
+                        className="flex w-full items-center justify-between gap-2 px-4 py-2.5 text-left text-[13px] text-white/90 transition-colors duration-300 hover:bg-white/10 hover:text-[#c9a45c]"
                       >
-                        <path
-                          fillRule="evenodd"
-                          d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </button>
+                        <span className="flex items-center gap-2">
+                          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#c9a45c]/80" />
+                          {group.label}
+                        </span>
+                        <button
+                          type="button"
+                          aria-label={`Expand ${group.label}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setOpenGroup((v) => (v === group.label ? null : group.label));
+                          }}
+                          className="rounded p-0.5 hover:bg-white/10"
+                        >
+                          <svg
+                            className={`h-3.5 w-3.5 transition-transform duration-200 ${expanded ? "rotate-180 text-[#c9a45c]" : "text-white/70"}`}
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </button>
+                      </Link>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setOpenGroup((v) => (v === group.label ? null : group.label))}
+                        className="flex w-full items-center justify-between gap-2 px-4 py-2.5 text-left text-[13px] text-white/90 transition-colors duration-300 hover:bg-white/10 hover:text-[#c9a45c]"
+                      >
+                        <span className="flex items-center gap-2">
+                          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#c9a45c]/80" />
+                          {group.label}
+                        </span>
+                        <svg
+                          className={`h-3.5 w-3.5 transition-transform duration-200 ${expanded ? "rotate-180 text-[#c9a45c]" : "text-white/70"}`}
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    )}
 
                     {expanded && (
                       <ul className="mb-1 mt-0.5 border-l pl-4" style={{ borderLeftColor: "rgba(255,255,255,0.14)" }}>
-                        {group.items.map((t) => (
-                          <li key={t}>
-                            <span className="flex items-center gap-2 px-4 py-2 text-[13px] text-white/75">
-                              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-white/35" />
-                              {t}
-                            </span>
-                          </li>
-                        ))}
+                        {group.items.map((t) => {
+                          const itemHref =
+                            group.sectionId && label === "Academics"
+                              ? academicItemHref(group.sectionId, t)
+                              : null;
+                          return (
+                            <li key={t}>
+                              {itemHref ? (
+                                <Link
+                                  href={itemHref}
+                                  onClick={() => setOpen(false)}
+                                  className="flex items-center gap-2 px-4 py-2 text-[13px] text-white/75 transition-colors duration-300 hover:bg-white/10 hover:text-[#c9a45c]"
+                                >
+                                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-white/35" />
+                                  {t}
+                                </Link>
+                              ) : (
+                                <span className="flex items-center gap-2 px-4 py-2 text-[13px] text-white/75">
+                                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-white/35" />
+                                  {t}
+                                </span>
+                              )}
+                            </li>
+                          );
+                        })}
                       </ul>
                     )}
                   </li>
@@ -190,6 +254,71 @@ function DropdownMenu({ label, items, isHeroTop }) {
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+/* ── Academics: desktop hover panel — label goes to /academics ── */
+function AcademicsHoverNav({ isHeroTop, pathname }) {
+  const active = pathname === "/academics" || pathname?.startsWith("/academics");
+  const linkClass = [
+    "inline-flex h-10 shrink-0 items-center border-b-2 border-transparent pb-0 text-[15px] font-medium transition-colors duration-200 sm:text-[16px]",
+    active ? "border-[#c9a45c]" : isHeroTop ? "hover:border-white/35" : "hover:border-slate-300 dark:hover:border-white/25",
+    active
+      ? isHeroTop
+        ? "text-white"
+        : "text-slate-900 dark:text-white"
+      : isHeroTop
+        ? "text-white/90 hover:text-white"
+        : "text-slate-700 hover:text-slate-900 dark:text-white/80 dark:hover:text-white",
+  ].join(" ");
+
+  const panelClass = isHeroTop
+    ? "rounded-2xl border border-white/15 bg-[rgba(11,44,74,0.96)] p-4 text-white shadow-[0_18px_60px_rgba(0,0,0,0.35)] backdrop-blur-md"
+    : "rounded-2xl border border-slate-200/90 bg-white p-4 text-slate-900 shadow-[0_18px_50px_rgba(15,23,42,0.12)] dark:border-white/10 dark:bg-slate-950/96 dark:text-white dark:shadow-[0_18px_60px_rgba(0,0,0,0.45)]";
+
+  const itemClass = isHeroTop
+    ? "block rounded-xl px-3 py-2 text-left transition-colors hover:bg-white/10"
+    : "block rounded-xl px-3 py-2 text-left transition-colors hover:bg-slate-100 dark:hover:bg-white/10";
+
+  const titleMuted = isHeroTop ? "text-white/75" : "text-slate-600 dark:text-white/65";
+  const itemTitle = isHeroTop ? "text-[13px] font-semibold text-white/95" : "text-[13px] font-semibold text-slate-900 dark:text-white/90";
+  const itemDesc = isHeroTop ? "mt-0.5 block text-[11px] leading-snug text-white/65" : "mt-0.5 block text-[11px] leading-snug text-slate-500 dark:text-white/55";
+  const footerClass = isHeroTop
+    ? "mt-3 flex items-center justify-center rounded-xl border border-white/20 px-3 py-2 text-center text-[12px] font-bold text-white/90 transition-colors hover:bg-white/10"
+    : "mt-3 flex items-center justify-center rounded-xl border border-slate-200 px-3 py-2 text-center text-[12px] font-bold text-slate-900 transition-colors hover:bg-slate-50 dark:border-white/15 dark:text-white dark:hover:bg-white/10";
+
+  return (
+    <div className="group relative shrink-0">
+      <Link href="/academics" className={linkClass}>
+        Academics
+      </Link>
+      <div
+        className="invisible absolute left-1/2 top-[calc(100%-10px)] z-[70] w-[min(calc(100vw-2rem),24rem)] -translate-x-1/2 pt-3 opacity-0 transition-all duration-200 ease-out group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+        role="region"
+        aria-label="Academics page sections"
+      >
+        <div className={panelClass}>
+          <div
+            className="h-[2px] w-full rounded-full"
+            style={{ background: "linear-gradient(90deg, rgba(201,164,92,0), rgba(201,164,92,1), rgba(201,164,92,0))" }}
+          />
+          <p className={`mt-3 text-xs leading-relaxed ${titleMuted}`}>
+            Grades, boards, languages, talent farming, life skills, and competitive programs.
+          </p>
+          <nav className="mt-3 max-h-[min(70vh,24rem)] space-y-1 overflow-y-auto overscroll-contain pr-0.5">
+            {academicsNavLinks.map((item) => (
+              <Link key={item.href} href={item.href} className={itemClass}>
+                <span className={itemTitle}>{item.label}</span>
+                <span className={itemDesc}>{item.desc}</span>
+              </Link>
+            ))}
+          </nav>
+          <Link href="/academics" className={footerClass}>
+            View full Academics page
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
@@ -338,6 +467,7 @@ export default function Navbar() {
         {/* ── Desktop Nav (center column) — Why Us outside scroll strip so hover panel is not clipped ── */}
         <nav className="hidden min-h-0 min-w-0 max-w-full items-center justify-center justify-self-center gap-x-3 gap-y-1 whitespace-nowrap md:flex md:gap-x-4 lg:gap-x-6 xl:gap-x-7">
           <WhyUsHoverNav isHeroTop={isHeroTop} pathname={pathname} />
+          <AcademicsHoverNav isHeroTop={isHeroTop} pathname={pathname} />
           <div className="flex min-h-0 min-w-0 max-w-full items-center justify-center gap-x-3 overflow-x-auto overflow-y-visible overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] md:gap-x-4 lg:gap-x-6 xl:gap-x-7 [&::-webkit-scrollbar]:hidden">
           {Object.entries(dropdownMenus).map(([label, items]) => (
             <DropdownMenu key={label} label={label} items={items} isHeroTop={isHeroTop} />
@@ -479,6 +609,76 @@ export default function Navbar() {
               )}
             </div>
 
+            <div className="rounded-md border border-slate-200/80 dark:border-white/10">
+              <div className="flex items-center justify-between gap-1">
+                <Link
+                  href="/academics"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    setMobileExpanded(null);
+                  }}
+                  className={`min-w-0 flex-1 rounded-md px-3 py-2 text-[13px] font-medium transition-colors duration-300 ${
+                    pathname === "/academics" || pathname?.startsWith("/academics")
+                      ? "bg-slate-900/5 text-slate-900 dark:bg-white/10 dark:text-white"
+                      : "text-slate-700 hover:bg-slate-900/5 hover:text-slate-900 dark:text-white/80 dark:hover:bg-white/10 dark:hover:text-white"
+                  }`}
+                >
+                  Academics
+                </Link>
+                <button
+                  type="button"
+                  aria-label="Expand Academics menu"
+                  onClick={() => setMobileExpanded((v) => (v === "Academics" ? null : "Academics"))}
+                  className="shrink-0 rounded-md p-2 text-slate-600 hover:bg-slate-900/5 dark:text-white/70 dark:hover:bg-white/10"
+                >
+                  <svg
+                    className={`h-3.5 w-3.5 transition-transform duration-200 ${mobileExpanded === "Academics" ? "rotate-180 text-[#c9a45c]" : ""}`}
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
+              {mobileExpanded === "Academics" && (
+                <div className="border-t border-slate-200/80 px-2 py-2 dark:border-white/10">
+                  <p className="px-2 pb-2 text-[11px] leading-relaxed text-slate-600 dark:text-white/55">
+                    Grades, boards, languages, talent, life skills, and competitive programs.
+                  </p>
+                  <Link
+                    href="/academics"
+                    onClick={() => {
+                      setMobileOpen(false);
+                      setMobileExpanded(null);
+                    }}
+                    className="block rounded-md px-3 py-2 text-[12px] font-semibold text-slate-900 dark:text-white"
+                  >
+                    Open full Academics page
+                  </Link>
+                  <div className="mt-1 max-h-[40vh] space-y-0.5 overflow-y-auto border-t border-slate-200/60 pt-2 dark:border-white/10">
+                    {academicsNavLinks.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => {
+                          setMobileOpen(false);
+                          setMobileExpanded(null);
+                        }}
+                        className="block rounded-md px-3 py-2 text-left text-[12px] text-slate-700 transition-colors hover:bg-slate-900/5 dark:text-white/80 dark:hover:bg-white/10"
+                      >
+                        <span className="font-semibold text-slate-900 dark:text-white/90">{item.label}</span>
+                        <span className="mt-0.5 block text-[11px] text-slate-500 dark:text-white/50">{item.desc}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {primaryLinks.map(({ href, label }) => (
               <Link
                 key={href}
@@ -519,8 +719,21 @@ export default function Navbar() {
                   <div className="ml-4 mt-1 border-l pl-3" style={{ borderLeftColor: "rgba(148,163,184,0.35)" }}>
                     {"items" in (items?.[0] ?? {}) ? (
                       <div className="flex flex-col gap-0.5 py-1">
+                        {label === "Academics" && (
+                          <Link
+                            href="/academics"
+                            onClick={() => {
+                              setMobileOpen(false);
+                              setMobileExpanded(null);
+                            }}
+                            className="rounded-md px-2 py-2 text-[13px] font-semibold text-[#c9a45c] transition-colors hover:bg-slate-900/5 dark:hover:bg-white/10"
+                          >
+                            Academics overview
+                          </Link>
+                        )}
                         {items.map((group) => {
                           const expanded = mobileExpanded === `${label}:${group.label}`;
+                          const sectionHref = group.sectionId ? academicSectionHref(group.sectionId) : null;
                           return (
                             <div key={group.label}>
                               <button
@@ -546,12 +759,34 @@ export default function Navbar() {
                               </button>
                               {expanded && (
                                 <div className="ml-3 border-l pl-3" style={{ borderLeftColor: "rgba(148,163,184,0.35)" }}>
-                                  {group.items.map((t) => (
-                                    <div key={t} className="flex items-center gap-2 px-2 py-2 text-[13px] text-slate-600 dark:text-white/60">
-                                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-white/35" />
-                                      {t}
-                                    </div>
-                                  ))}
+                                  {group.items.map((t) => {
+                                    const itemHref =
+                                      group.sectionId && label === "Academics"
+                                        ? academicItemHref(group.sectionId, t)
+                                        : null;
+                                    return itemHref ? (
+                                      <Link
+                                        key={t}
+                                        href={itemHref}
+                                        onClick={() => {
+                                          setMobileOpen(false);
+                                          setMobileExpanded(null);
+                                        }}
+                                        className="flex items-center gap-2 rounded-md px-2 py-2 text-[13px] text-slate-600 transition-colors hover:bg-slate-900/5 hover:text-slate-900 dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white"
+                                      >
+                                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400/60 dark:bg-white/35" />
+                                        {t}
+                                      </Link>
+                                    ) : (
+                                      <div
+                                        key={t}
+                                        className="flex items-center gap-2 px-2 py-2 text-[13px] text-slate-600 dark:text-white/60"
+                                      >
+                                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400/60 dark:bg-white/35" />
+                                        {t}
+                                      </div>
+                                    );
+                                  })}
                                 </div>
                               )}
                             </div>
