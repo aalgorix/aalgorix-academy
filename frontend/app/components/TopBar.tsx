@@ -84,6 +84,12 @@ export default function TopBar() {
             About
           </Link>
           <Link
+            href="/blog"
+            className={`hidden sm:inline-flex items-center rounded-full border ${pillBase} backdrop-blur transition ${pillClass}`}
+          >
+            Blog
+          </Link>
+          <Link
             href="/contact"
             className={`hidden sm:inline-flex items-center rounded-full border ${pillBase} backdrop-blur transition ${pillClass}`}
           >

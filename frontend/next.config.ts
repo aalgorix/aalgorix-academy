@@ -3,6 +3,13 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.ctfassets.net",
+        pathname: "/**",
+      },
+    ],
   },
   // Expose backend URL to client-side code via NEXT_PUBLIC_* convention
   env: {

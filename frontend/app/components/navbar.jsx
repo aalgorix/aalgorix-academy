@@ -4,7 +4,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import ThemeToggle from "./ThemeToggle";
+import BrandLogo from "./BrandLogo";
 import { LogIn } from "lucide-react";
+import { mainNavLinks } from "../lib/site-nav";
 import {
   academicsMenuGroups,
   academicsNavLinks,
@@ -406,17 +408,9 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const primaryLinks = [
-    { href: "/ai-tutor", label: "AI Tutor" },
-    { href: "/learning-model", label: "Learning Model" },
-    { href: "/talent-partners", label: "Talent Partners" },
-    { href: "/talent-support", label: "Talent Support" },
-    { href: "/#faq", label: "FAQ" },
-  ];
-
-  const navTextClass = isHeroTop ? "text-white" : "text-slate-900 dark:text-white";
-
-  const navSubTextClass = isHeroTop ? "text-white/75" : "text-slate-600 dark:text-white/65";
+  const primaryLinks = mainNavLinks.filter(
+    (link) => link.href !== "/why-us" && link.href !== "/academics",
+  );
 
   return (
     <header
@@ -435,34 +429,11 @@ export default function Navbar() {
     >
       <div className="mx-auto grid min-h-[var(--aa-navbar-h)] w-full max-w-[180rem] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-4 py-2.5 sm:px-6 md:grid-cols-[auto_minmax(0,1fr)_auto] md:gap-x-5 md:px-10 lg:gap-x-6 lg:px-16">
         {/* ── Logo (text wordmark) ── */}
-        <Link
+        <BrandLogo
           href="/"
-          className="group relative z-20 flex min-w-0 shrink-0 items-center gap-3 justify-self-start outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-[#c9a45c]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
-        >
-          <div
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-base font-black tracking-tight text-slate-900 md:h-10 md:w-10 md:text-lg dark:text-black"
-            style={{
-              background: "linear-gradient(135deg, rgba(201,164,92,1) 0%, rgba(201,164,92,0.78) 100%)",
-              boxShadow: "0 10px 26px rgba(201,164,92,0.16)",
-            }}
-          >
-            A
-          </div>
-          <span className="hidden min-w-0 flex-col items-start sm:flex">
-            <span className={`block text-xl font-bold leading-tight md:text-2xl ${navTextClass} whitespace-nowrap`}>
-              Aalgorix <span style={{ color: GOLD }}>World Academy</span>
-            </span>
-            <span
-              className={[
-                "mt-0.5 block whitespace-nowrap text-left font-medium uppercase",
-                "text-[clamp(15px,0.85vw,13px)] tracking-[0.18em] leading-tight",
-                navSubTextClass,
-              ].join(" ")}
-            >
-              AI Powered Home School
-            </span>
-          </span>
-        </Link>
+          light={isHeroTop}
+          className="relative z-20 justify-self-start focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-[#c9a45c]/70 focus-visible:ring-offset-2"
+        />
 
         {/* ── Desktop Nav (center column) — Why Us outside scroll strip so hover panel is not clipped ── */}
         <nav className="hidden min-h-0 min-w-0 max-w-full items-center justify-center justify-self-center gap-x-3 gap-y-1 whitespace-nowrap md:flex md:gap-x-4 lg:gap-x-6 xl:gap-x-7">
