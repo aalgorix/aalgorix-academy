@@ -49,7 +49,7 @@ export default function BlogCoverImage({
         <p className="max-w-xs text-xs leading-relaxed text-amber-800/90 dark:text-amber-100/75">
           In Contentful, open Media → publish the cover image, then publish the blog entry again.
         </p>
-      </motion>
+      </div>
     );
   }
 
