@@ -11,7 +11,7 @@ import {
 } from "../../lib/contentful-blog";
 import { BlogRichText } from "../../lib/blog-rich-text";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 const BLUR_PLACEHOLDER =
   "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 5'%3E%3Cfilter id='b'%3E%3CfeGaussianBlur stdDeviation='1'/%3E%3C/filter%3E%3Crect width='8' height='5' fill='%23e2e8f0' filter='url(%23b)'/%3E%3C/svg%3E";
