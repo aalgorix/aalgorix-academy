@@ -7,6 +7,7 @@ import {
   formatPublishDate,
   getAssetAlt,
   getAssetUrl,
+  getBlogRevalidateSeconds,
   type BlogPost,
 } from "../lib/contentful-blog";
 import { BlogRichText } from "../lib/blog-rich-text";
@@ -17,8 +18,8 @@ export const metadata: Metadata = {
     "Insights, updates, and stories from Aalgorix World Academy on AI education, homeschooling, and future-ready learning.",
 };
 
-/** Revalidate listing every hour; pair with `revalidateTag('contentful-blog-posts')` on publish webhooks. */
-export const revalidate = 3600;
+/** Refetch from Contentful every N seconds. Set CONTENTFUL_REVALIDATE_SECONDS=0 in .env.local for instant updates. */
+export const revalidate = getBlogRevalidateSeconds();
 
 /*
   next.config.ts — add to images.remotePatterns so Next.js <Image /> can load Contentful assets:

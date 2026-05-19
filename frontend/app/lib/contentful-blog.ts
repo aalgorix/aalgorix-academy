@@ -82,6 +82,25 @@ export const CONTENTFUL_BLOG_CACHE_TAG = "contentful-blog-posts";
 const CONTENT_TYPE =
   process.env.CONTENTFUL_BLOG_CONTENT_TYPE ?? "aalgorixAcademyBlog";
 
+/** Seconds before the blog listing refetches from Contentful (default: 60). */
+export function getBlogRevalidateSeconds(): number {
+  const parsed = Number(process.env.CONTENTFUL_REVALIDATE_SECONDS ?? 60);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : 60;
+}
+
+function getFetchCacheOptions(): RequestInit["next"] {
+  const revalidate = getBlogRevalidateSeconds();
+
+  if (process.env.NODE_ENV === "development" || revalidate === 0) {
+    return { revalidate: 0 };
+  }
+
+  return {
+    tags: [CONTENTFUL_BLOG_CACHE_TAG],
+    revalidate,
+  };
+}
+
 function getCredentials(): { spaceId: string; accessToken: string } {
   const spaceId = process.env.CONTENTFUL_SPACE_ID;
   const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN;
@@ -136,10 +155,7 @@ async function fetchAssetById(
 ): Promise<ContentfulAsset | null> {
   const response = await fetch(`${baseUrl}/assets/${assetId}`, {
     headers: { Authorization: `Bearer ${accessToken}` },
-    next: {
-      tags: [CONTENTFUL_BLOG_CACHE_TAG],
-      revalidate: 3600,
-    },
+    next: getFetchCacheOptions(),
   });
 
   if (!response.ok) return null;
@@ -179,7 +195,11 @@ async function mapEntry(
   baseUrl: string,
   accessToken: string,
   assetCache: Map<string, ContentfulAsset | null>
-): Promise<BlogPost> {
+): Promise<BlogPost | null> {
+  const title = entry.fields?.title?.trim();
+  const slug = entry.fields?.slug?.trim();
+  if (!title || !slug) return null;
+
   const { asset, unpublished } = await resolveCoverImage(
     entry.fields.coverImage,
     includes,
@@ -190,8 +210,8 @@ async function mapEntry(
 
   return {
     id: entry.sys.id,
-    title: entry.fields.title,
-    slug: entry.fields.slug,
+    title,
+    slug,
     createdAt: entry.sys.createdAt,
     updatedAt: entry.sys.updatedAt,
     coverImage: asset,
@@ -236,10 +256,7 @@ async function fetchEntries(
 
   const response = await fetch(url, {
     headers: { Authorization: `Bearer ${accessToken}` },
-    next: {
-      tags: [CONTENTFUL_BLOG_CACHE_TAG],
-      revalidate: 3600,
-    },
+    next: getFetchCacheOptions(),
   });
 
   if (!response.ok) {
@@ -258,15 +275,20 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
 
   const params = new URLSearchParams({
     content_type: CONTENT_TYPE,
-    order: "-sys.createdAt",
+    order: "-sys.updatedAt",
+    limit: "100",
   });
 
   const data = await fetchEntries(params);
   const assetCache = new Map<string, ContentfulAsset | null>();
 
-  return Promise.all(
+  const posts = await Promise.all(
     data.items.map((item) => mapEntry(item, data.includes, baseUrl, accessToken, assetCache))
   );
+
+  return posts
+    .filter((post): post is BlogPost => post !== null)
+    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 }
 
 export async function fetchBlogPostBySlug(slug: string): Promise<BlogPost | null> {
